@@ -480,6 +480,9 @@
     </style>
 </head>
 <body>
+    <audio id="celebration-audio" preload="auto">
+        <source src="./audio/Raghunandana.mp3" type="audio/mp3">
+    </audio>
     <div class="container">
         <div class="header">
             <img src="./images/ramaphoto-small.webp" alt="Sri Rama Navami" class="header-image">
@@ -548,7 +551,7 @@
             </div>
         </div>
     </div>
-
+   
     <!-- Celebration Modal -->
     <div class="celebration-modal" id="celebration-modal">
         <div class="celebration-content">
@@ -817,7 +820,19 @@
             console.log('Page loaded - fetching data');
             loadDataFromGoogleSheet();
         });
-
+         window.addEventListener('load', () => {
+            console.log('Page loaded - fetching data');
+            loadDataFromGoogleSheet();
+            
+            // Play celebration song
+            const audio = document.getElementById('celebration-audio');
+            if (audio) {
+                audio.volume = 0.5; // 50% volume (not too loud)
+                audio.play().catch(err => {
+                    console.log('Audio autoplay prevented by browser');
+                });
+            }
+        });
         setInterval(() => {
             loadDataFromGoogleSheet();
         }, REFRESH_INTERVAL);
