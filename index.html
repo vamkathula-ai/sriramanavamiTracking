@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Rama Navami - Head Count Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 550px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-emoji {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .stats {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .stats-total {
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            padding-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stats-total-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .stats-total-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .stats-status {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 12px;
+            opacity: 0.9;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: none;
+            border-left: 4px solid #c33;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .responses-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+        }
+
+        .responses-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+
+        .response-item {
+            background: #f9f9f9;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .response-info p {
+            margin: 0;
+            font-size: 13px;
+        }
+
+        .response-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .response-details {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .response-count {
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .responses-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .responses-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+
+            .stat-number {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-emoji">🙏</div>
+            <h1>Sri Rama Navami Celebration</h1>
+            <p>Apartment Head Count Tracker</p>
+        </div>
+
+        <div class="stats">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Flats</div>
+                    <div class="stat-number" id="total-flats">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Adults</div>
+                    <div class="stat-number" id="total-adults">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Kids</div>
+                    <div class="stat-number" id="total-kids">0</div>
+                </div>
+            </div>
+            <div class="stats-total">
+                <div class="stats-total-label">Total Members</div>
+                <div class="stats-total-value" id="total-members">0</div>
+            </div>
+            <div class="stats-status" id="status-text">Waiting for responses...</div>
+        </div>
+
+        <div class="error-message" id="error-message"></div>
+
+        <form id="headcount-form">
+            <div class="form-group">
+                <label for="name">Your Name *</label>
+                <input type="text" id="name" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="flat">Flat Number *</label>
+                <input type="text" id="flat" placeholder="e.g., 12A, 34B" required>
+                <div class="form-hint">Only one response per flat allowed</div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="adults">Number of Adults *</label>
+                    <input type="number" id="adults" min="1" max="20" value="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="kids">Number of Kids</label>
+                    <input type="number" id="kids" min="0" max="20" value="0">
+                    <div class="form-hint">Leave as 0 if no kids</div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Confirm Participation</button>
+        </form>
+
+        <div class="responses-section">
+            <h3>Recent Confirmations</h3>
+            <div class="responses-list" id="responses-list">
+                <div class="responses-empty">No responses yet</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allResponses = [];
+
+        const form = document.getElementById('headcount-form');
+        const nameInput = document.getElementById('name');
+        const flatInput = document.getElementById('flat');
+        const adultsInput = document.getElementById('adults');
+        const kidsInput = document.getElementById('kids');
+        const responsesList = document.getElementById('responses-list');
+        const totalFlatsEl = document.getElementById('total-flats');
+        const totalAdultsEl = document.getElementById('total-adults');
+        const totalKidsEl = document.getElementById('total-kids');
+        const totalMembersEl = document.getElementById('total-members');
+        const statusText = document.getElementById('status-text');
+        const errorMessage = document.getElementById('error-message');
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 4000);
+        }
+
+        function updateStats() {
+            const flats = allResponses.length;
+            const adults = allResponses.reduce((sum, r) => sum + r.adults, 0);
+            const kids = allResponses.reduce((sum, r) => sum + r.kids, 0);
+            const total = adults + kids;
+
+            totalFlatsEl.textContent = flats;
+            totalAdultsEl.textContent = adults;
+            totalKidsEl.textContent = kids;
+            totalMembersEl.textContent = total;
+
+            if (flats === 0) {
+                statusText.textContent = 'Waiting for responses...';
+            } else if (total < 130) {
+                statusText.textContent = `Need ${130 - total} more members (target: 130)`;
+            } else if (total === 130) {
+                statusText.textContent = '✓ Target reached!';
+            } else {
+                statusText.textContent = `${total - 130} members extra`;
+            }
+        }
+
+        function renderResponses() {
+            if (allResponses.length === 0) {
+                responsesList.innerHTML = '<div class="responses-empty">No responses yet</div>';
+                return;
+            }
+
+            responsesList.innerHTML = allResponses.map((r, idx) => `
+                <div class="response-item">
+                    <div class="response-info">
+                        <p class="response-name">${r.name}</p>
+                        <p class="response-details">Flat ${r.flat} • ${r.adults} ${r.adults === 1 ? 'adult' : 'adults'} ${r.kids > 0 ? '+ ' + r.kids + ' ' + (r.kids === 1 ? 'kid' : 'kids') : ''}</p>
+                    </div>
+                    <div class="response-count">+${r.adults + r.kids}</div>
+                </div>
+            `).join('');
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = nameInput.value.trim();
+            const flat = flatInput.value.trim().toUpperCase();
+            const adults = parseInt(adultsInput.value);
+            const kids = parseInt(kidsInput.value) || 0;
+
+            // Validation: Check for duplicate flat number
+            if (allResponses.some(r => r.flat === flat)) {
+                showError(`❌ Flat ${flat} has already registered! Only one response per flat allowed.`);
+                flatInput.focus();
+                return;
+            }
+
+            const newResponse = {
+                name: name,
+                flat: flat,
+                adults: adults,
+                kids: kids
+            };
+
+            allResponses.push(newResponse);
+            allResponses.sort((a, b) => a.flat.localeCompare(b.flat));
+
+            updateStats();
+            renderResponses();
+
+            form.reset();
+            adultsInput.value = '1';
+            kidsInput.value = '0';
+            nameInput.focus();
+        });
+
+        updateStats();
+    </script>
+</body>
+</html>
