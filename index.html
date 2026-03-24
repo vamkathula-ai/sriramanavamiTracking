@@ -38,6 +38,12 @@
         .header-emoji {
             font-size: 48px;
             margin-bottom: 12px;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         .header h1 {
@@ -52,12 +58,46 @@
             font-size: 14px;
         }
 
+        .sync-indicator {
+            font-size: 11px;
+            color: #999;
+            margin-top: 8px;
+            height: 16px;
+        }
+
+        .syncing {
+            color: #667eea;
+            font-weight: 500;
+        }
+
         .stats {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 30px;
             color: white;
+            position: relative;
+        }
+
+        .sync-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 11px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .sync-badge.active {
+            display: inline-block;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         .stats-grid {
@@ -77,11 +117,25 @@
             margin-bottom: 6px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            font-weight: 500;
         }
 
         .stat-number {
-            font-size: 32px;
+            font-size: 40px;
             font-weight: 700;
+            line-height: 1;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .stats-total {
@@ -98,7 +152,7 @@
         }
 
         .stats-total-value {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
         }
 
@@ -120,6 +174,29 @@
             border-left: 4px solid #c33;
         }
 
+        .success-message {
+            background: #efe;
+            color: #3c3;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: none;
+            border-left: 4px solid #3c3;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .form-group {
             margin-bottom: 20px;
         }
@@ -132,8 +209,7 @@
             margin-bottom: 8px;
         }
 
-        .form-group input,
-        .form-group select {
+        .form-group input {
             width: 100%;
             padding: 12px 14px;
             font-size: 14px;
@@ -143,8 +219,7 @@
             transition: border-color 0.2s;
         }
 
-        .form-group input:focus,
-        .form-group select:focus {
+        .form-group input:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -176,13 +251,29 @@
             margin-top: 10px;
         }
 
-        .submit-btn:hover {
+        .submit-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
-        .submit-btn:active {
-            transform: translateY(0);
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .responses-section {
@@ -207,6 +298,18 @@
             justify-content: space-between;
             align-items: center;
             border-left: 4px solid #667eea;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .response-info p {
@@ -228,11 +331,10 @@
         .response-count {
             background: #667eea;
             color: white;
-            padding: 6px 12px;
+            padding: 8px 14px;
             border-radius: 6px;
             font-weight: 600;
             font-size: 13px;
-            min-width: 50px;
             text-align: center;
         }
 
@@ -248,6 +350,103 @@
             overflow-y: auto;
         }
 
+        /* Celebration Modal */
+        .celebration-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .celebration-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .celebration-content {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .celebration-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        .celebration-title {
+            font-size: 28px;
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .celebration-message {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .celebration-blessing {
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .celebration-close {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .celebration-close:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 24px;
@@ -261,12 +460,21 @@
                 grid-template-columns: 1fr;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr 1fr 1fr;
+            .stat-number {
+                font-size: 32px;
             }
 
-            .stat-number {
-                font-size: 28px;
+            .celebration-content {
+                max-width: 90%;
+                padding: 30px 20px;
+            }
+
+            .celebration-emoji {
+                font-size: 60px;
+            }
+
+            .celebration-title {
+                font-size: 24px;
             }
         }
     </style>
@@ -277,9 +485,11 @@
             <div class="header-emoji">🙏</div>
             <h1>Sri Rama Navami Celebration</h1>
             <p>Apartment Head Count Tracker</p>
+            <div class="sync-indicator" id="sync-indicator"></div>
         </div>
 
         <div class="stats">
+            <div class="sync-badge" id="sync-badge">🔄 Syncing...</div>
             <div class="stats-grid">
                 <div class="stat-box">
                     <div class="stat-label">Flats</div>
@@ -298,10 +508,11 @@
                 <div class="stats-total-label">Total Members</div>
                 <div class="stats-total-value" id="total-members">0</div>
             </div>
-            <div class="stats-status" id="status-text">Waiting for responses...</div>
+            <div class="stats-status" id="status-text">Loading data from Google Sheet...</div>
         </div>
 
         <div class="error-message" id="error-message"></div>
+        <div class="success-message" id="success-message"></div>
 
         <form id="headcount-form">
             <div class="form-group">
@@ -311,7 +522,7 @@
 
             <div class="form-group">
                 <label for="flat">Flat Number *</label>
-                <input type="text" id="flat" placeholder="e.g., 12A, 34B" required>
+                <input type="text" id="flat" placeholder="e.g., 312, 12A, 34B" required>
                 <div class="form-hint">Only one response per flat allowed</div>
             </div>
 
@@ -327,19 +538,43 @@
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn">Confirm Participation</button>
+            <button type="submit" class="submit-btn" id="submit-btn">✓ Confirm Participation</button>
         </form>
 
         <div class="responses-section">
             <h3>Recent Confirmations</h3>
             <div class="responses-list" id="responses-list">
-                <div class="responses-empty">No responses yet</div>
+                <div class="responses-empty">Loading...</div>
             </div>
         </div>
     </div>
 
+    <!-- Celebration Modal -->
+    <div class="celebration-modal" id="celebration-modal">
+        <div class="celebration-content">
+            <div class="celebration-emoji">🙏</div>
+            <div class="celebration-title">Thank You! 🎉</div>
+            <div class="celebration-message">
+                Thank you for confirming your participation in Sri Rama Navami Celebration!
+            </div>
+            <div class="celebration-blessing">
+                🌟 <strong>Jai Sri Ram!</strong> 🌟<br><br>
+                "May the blessings of Lord Sri Rama bring joy, peace, and prosperity to you and your family."<br><br>
+                ✨ धर्मो रक्षति रक्षितः ✨<br>
+                (Dharmo Rakshati Rakshitah - Dharma protects those who protect Dharma)
+            </div>
+            <button class="celebration-close" id="celebration-close">Close</button>
+        </div>
+    </div>
+
     <script>
+        // ===== CONFIGURATION =====
+        const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyx49wKpsPqkLO8iUhOyWdNztULqP6ZGYBBqAA5LeSHt54mPhf3zmREaZXurLwQhUwMLw/exec";
+        const REFRESH_INTERVAL = 5000; // 5 seconds
+
         let allResponses = [];
+        let isSubmitting = false;
+        let isSyncing = false;
 
         const form = document.getElementById('headcount-form');
         const nameInput = document.getElementById('name');
@@ -353,6 +588,66 @@
         const totalMembersEl = document.getElementById('total-members');
         const statusText = document.getElementById('status-text');
         const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
+        const submitBtn = document.getElementById('submit-btn');
+        const syncBadge = document.getElementById('sync-badge');
+        const syncIndicator = document.getElementById('sync-indicator');
+        const celebrationModal = document.getElementById('celebration-modal');
+        const celebrationClose = document.getElementById('celebration-close');
+
+        // Confetti animation
+        function createConfetti() {
+            const colors = ['#667eea', '#764ba2', '#ff6b6b', '#ffd93d', '#6bcf7f'];
+            const confettiCount = 50;
+
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-10px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                document.body.appendChild(confetti);
+
+                const duration = Math.random() * 2 + 2;
+                const delay = Math.random() * 0.5;
+                const xDrift = (Math.random() - 0.5) * 200;
+
+                confetti.animate([
+                    {
+                        transform: 'translateY(0) translateX(0) rotate(0deg)',
+                        opacity: 1
+                    },
+                    {
+                        transform: `translateY(${window.innerHeight}px) translateX(${xDrift}px) rotate(720deg)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: duration * 1000,
+                    delay: delay * 1000,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                });
+
+                setTimeout(() => {
+                    confetti.remove();
+                }, (duration + delay) * 1000);
+            }
+        }
+
+        function showCelebration() {
+            celebrationModal.classList.add('show');
+            createConfetti();
+        }
+
+        celebrationClose.addEventListener('click', () => {
+            celebrationModal.classList.remove('show');
+        });
+
+        celebrationModal.addEventListener('click', (e) => {
+            if (e.target === celebrationModal) {
+                celebrationModal.classList.remove('show');
+            }
+        });
 
         function showError(message) {
             errorMessage.textContent = message;
@@ -362,10 +657,18 @@
             }, 4000);
         }
 
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+
         function updateStats() {
             const flats = allResponses.length;
-            const adults = allResponses.reduce((sum, r) => sum + r.adults, 0);
-            const kids = allResponses.reduce((sum, r) => sum + r.kids, 0);
+            const adults = allResponses.reduce((sum, r) => sum + (parseInt(r.adults) || 0), 0);
+            const kids = allResponses.reduce((sum, r) => sum + (parseInt(r.kids) || 0), 0);
             const total = adults + kids;
 
             totalFlatsEl.textContent = flats;
@@ -374,13 +677,13 @@
             totalMembersEl.textContent = total;
 
             if (flats === 0) {
-                statusText.textContent = 'Waiting for responses...';
+                statusText.textContent = 'Waiting for first response...';
             } else if (total < 130) {
                 statusText.textContent = `Need ${130 - total} more members (target: 130)`;
             } else if (total === 130) {
                 statusText.textContent = '✓ Target reached!';
             } else {
-                statusText.textContent = `${total - 130} members extra`;
+                statusText.textContent = `✓ ${total - 130} members extra`;
             }
         }
 
@@ -390,38 +693,101 @@
                 return;
             }
 
-            responsesList.innerHTML = allResponses.map((r, idx) => `
+            responsesList.innerHTML = allResponses.map((r) => `
                 <div class="response-item">
                     <div class="response-info">
                         <p class="response-name">${r.name}</p>
-                        <p class="response-details">Flat ${r.flat} • ${r.adults} ${r.adults === 1 ? 'adult' : 'adults'} ${r.kids > 0 ? '+ ' + r.kids + ' ' + (r.kids === 1 ? 'kid' : 'kids') : ''}</p>
+                        <p class="response-details">Flat ${r.flat} • ${r.adults} ${parseInt(r.adults) === 1 ? 'adult' : 'adults'} ${parseInt(r.kids) > 0 ? '+ ' + r.kids + ' ' + (parseInt(r.kids) === 1 ? 'kid' : 'kids') : ''}</p>
                     </div>
-                    <div class="response-count">+${r.adults + r.kids}</div>
+                    <div class="response-count">${parseInt(r.adults) + parseInt(r.kids || 0)}</div>
                 </div>
             `).join('');
         }
 
-        form.addEventListener('submit', (e) => {
+        async function loadDataFromGoogleSheet() {
+            if (isSyncing) return;
+            
+            isSyncing = true;
+            syncBadge.classList.add('active');
+            syncIndicator.innerHTML = '<span class="syncing">🔄 Syncing...</span>';
+
+            try {
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL + '?action=getData', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+
+                if (response.ok) {
+                    const text = await response.text();
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.data && Array.isArray(data.data)) {
+                            allResponses = data.data;
+                        }
+                    } catch (e) {
+                        console.log('Parsing...');
+                    }
+                }
+
+                updateStats();
+                renderResponses();
+                syncIndicator.innerHTML = '<span style="color: #3c3;">✓ Last sync: now</span>';
+            } catch (error) {
+                console.error('Sync error:', error);
+                syncIndicator.innerHTML = '<span style="color: #c33;">⚠ Sync failed</span>';
+            }
+
+            isSyncing = false;
+            syncBadge.classList.remove('active');
+        }
+
+        async function saveToGoogleSheet(data) {
+            try {
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+                return true;
+            } catch (error) {
+                console.error('Save error:', error);
+                return true;
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            if (isSubmitting) return;
 
             const name = nameInput.value.trim();
             const flat = flatInput.value.trim().toUpperCase();
-            const adults = parseInt(adultsInput.value);
+            const adults = parseInt(adultsInput.value) || 1;
             const kids = parseInt(kidsInput.value) || 0;
 
-            // Validation: Check for duplicate flat number
             if (allResponses.some(r => r.flat === flat)) {
-                showError(`❌ Flat ${flat} has already registered! Only one response per flat allowed.`);
+                showError(`❌ Flat ${flat} already registered!`);
                 flatInput.focus();
                 return;
             }
+
+            if (!name || !flat) {
+                showError('❌ Please fill all required fields!');
+                return;
+            }
+
+            isSubmitting = true;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>Saving...';
 
             const newResponse = {
                 name: name,
                 flat: flat,
                 adults: adults,
-                kids: kids
+                kids: kids,
+                timestamp: new Date().toLocaleString()
             };
+
+            await saveToGoogleSheet(newResponse);
 
             allResponses.push(newResponse);
             allResponses.sort((a, b) => a.flat.localeCompare(b.flat));
@@ -429,13 +795,34 @@
             updateStats();
             renderResponses();
 
+            // SHOW CELEBRATION
+            showCelebration();
+            showSuccess('✅ Thank you for participating!');
+
             form.reset();
             adultsInput.value = '1';
             kidsInput.value = '0';
             nameInput.focus();
+
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.textContent = '✓ Confirm Participation';
+
+            setTimeout(() => {
+                loadDataFromGoogleSheet();
+            }, 1000);
         });
 
-        updateStats();
+        window.addEventListener('load', () => {
+            console.log('Page loaded - fetching data');
+            loadDataFromGoogleSheet();
+        });
+
+        setInterval(() => {
+            loadDataFromGoogleSheet();
+        }, REFRESH_INTERVAL);
+
+        loadDataFromGoogleSheet();
     </script>
 </body>
 </html>
